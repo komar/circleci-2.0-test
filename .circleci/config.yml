@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/ci-test
+
+    docker:
+      - image: python:3.5.3
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: test-{{ checksum requirements.txt  }}
+
+      - run: pip install --upgrade pip
+      - run: pip install -r requirements.txt
+
+      - save_cache:
+          key: test-{{ checksum "requirements.txt" }}
+          paths: /usr/local/lib/python3.5/site-packages/
+
+      - run: flake8 sample_package 
